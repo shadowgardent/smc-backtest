@@ -1,0 +1,113 @@
+000 | Normal               | เครื่องมือวิเคราะห์และแสดงผลโครงสร้างตลาดการเงินด้วยอัลกอริทึม Smart Money Concepts (SMC)
+001 | Normal               | FINANCIAL MARKET STRUCTURE ANALYSIS AND VISUALIZATION TOOL USING SMART MONEY CONCEPTS (SMC) ALGORITHMS
+002 | Normal               | จัดทำโดย 
+003 | Normal               | นายนวพรหม ภูผาผิว 663450040-2
+004 | Normal               | 
+005 | Normal               | 
+006 | Page Number1         | 
+007 | Page Number1         | 
+008 | Page Number1         | 
+009 | Normal               | บทคัดย่อ
+010 | Page Number1         | บทความนี้นำเสนอการพัฒนาเครื่องมืออัตโนมัติด้วยภาษา Python เพื่อวิเคราะห์และแสดงผลโครงสร้างตลาดการเงินตามแนวคิด Smart Money Concepts (SMC) อย่างเป็นปรนัย เพื่อแก้ไขปัญหานักลงทุนรายย่อยที่มีอัตราขาดทุนสูง 60–80% จากอคติทางอารมณ์และความไม่เป็นปรนัยของการวิเคราะห์ด้วยสายตาเปล่า ระบบใช้อัลกอริทึมเชิงกฎเกณฑ์ (Rule-based Algorithm) ร่วมกับเทคนิค Look-back/Look-forward ตรวจจับจุด Swing High/Low, BOS, CHoCH และ Order Block พร้อมกลไกวิเคราะห์ 7 กรอบเวลาแบบถ่วงน้ำหนัก (Multi-Timeframe Scoring) และแสดงผลผ่านเว็บแอปพลิเคชันด้วยกราฟแท่งเทียนเชิงโต้ตอบจาก TradingView Lightweight Charts และกระดานข้อมูลสรุปผล ระบบช่วยลดเวลา ขจัดอคติ และเพิ่มประสิทธิภาพในการตัดสินใจลงทุนอย่างมีระบบ
+011 | Page Number1         | คำสำคัญ -- สมาร์ทมันนี่คอนเซปต์, โครงสร้างตลาดการเงิน, อัลกอริทึมเชิงกฎเกณฑ์, กราฟเชิงโต้ตอบ, การวิเคราะห์หลายกรอบเวลา
+012 | Body Text Indent     | 
+013 | Normal               | ABSTRACT
+014 | Normal               | This paper presents the development of an automated Python tool for analyzing and visualizing financial market structures objectively using Smart Money Concepts (SMC). It addresses retail traders’ 60–80% loss rate, largely driven by emotional bias and subjective manual charting. The system applies a rule-based algorithm with look-back/look-forward periods to detect Swing points, Break of Structure (BOS), Change of Character (CHoCH), and Order Blocks. A Multi-Timeframe Scoring Engine evaluates trends across seven timeframes to determine weighted market directions. Results are rendered via an interactive web application utilizing TradingView Lightweight Charts. This automated approach eliminates subjectivity, saves time, and enhances systematic investment decisions.
+015 | Page Number1         | Keywords -- Smart Money Concepts, Market Structure, Rule-based Algorithm, Interactive Chart, Multi-Timeframe Analysis
+016 | Normal               | 
+017 | Normal               | 1. บทนำ
+018 | Body Text Indent 3   | 	นักลงทุนรายย่อยในตลาดการเงินมีอัตราการขาดทุนเฉลี่ยสูงถึง 60–80% ตามรายงานของ ESMA และงานวิจัยที่เกี่ยวข้อง [1] สาเหตุสำคัญมาจากอคติทางอารมณ์ (Emotional Bias) และการขาดเครื่องมือวิเคราะห์โครงสร้างตลาดที่เป็นปรนัย แม้แนวคิด Smart Money Concepts (SMC) จะช่วยติดตามพฤติกรรมของสถาบันการเงินรายใหญ่ได้ แต่การตีเส้นกราฟด้วยสายตาเปล่ายังมีข้อจำกัดด้านความแปรผันตามมุมมองบุคคล ใช้เวลานาน และเกิดความผิดพลาดได้ง่าย โครงงานนี้จึงพัฒนาเครื่องมืออัตโนมัติด้วยภาษา Python โดยมีวัตถุประสงค์เพื่อ
+019 | Body Text Indent 3   | 1) พัฒนาอัลกอริทึมสแกนหาจุด Swing, BOS, CHoCH และ Order Block อย่างเป็นปรนัย 
+020 | Body Text Indent 3   | 2) พัฒนากระดานข้อมูล (Dashboard) สรุปแนวโน้มตลาดใน 7 กรอบเวลาแบบอัตโนมัติ 
+021 | Body Text Indent 3   | 3) พัฒนาเว็บแอปพลิเคชันสำหรับ Backtesting และแสดงกราฟแท่งเทียนเชิงโต้ตอบด้วยไลบรารี TradingView Lightweight Charts
+022 | Body Text Indent 3   |  
+023 | Normal               | 2. ทฤษฎีและงานวิจัยที่เกี่ยวข้อง
+024 | Normal               | 2.1 นิยามศัพท์เฉพาะ SMC
+025 | Normal               | งานวิจัยกำหนดนิยามโครงสร้างราคาทางคณิตศาสตร์ไว้ในตาราง 1 
+026 | Normal               | ตาราง 1 นิยามศัพท์เฉพาะตามหลักการ SMC
+027 | Normal               | 
+028 | Normal               | 2.2 งานวิจัยที่เกี่ยวข้อง
+029 | Normal               | Lo, Mamaysky, และ Wang [2] ได้ศึกษาการใช้อัลกอริทึมเชิงคำนวณและการอนุมานทางสถิติเพื่อตรวจจับรูปแบบราคาทางเทคนิค ซึ่งแสดงให้เห็นว่าการแปลงรูปแบบกราฟเป็นกฎเกณฑ์เชิงประจักษ์ช่วยลดความผันแปรเชิงอัตวิสัยได้อย่างมีนัยสำคัญ [2] สอดคล้องกับ Babu และ Reddy [3] ที่ประยุกต์ใช้ภาษา Python ในการสแกนและวิเคราะห์โครงสร้างตลาดหุ้นแบบอัตโนมัติ [2] ขณะที่ Cont, Kukanov, และ Stoikov [4] ได้วิเคราะห์ผลกระทบของเหตุการณ์ใน Order Book ต่อพลวัตของราคา ซึ่งเป็นรากฐานทางทฤษฎีที่สนับสนุนการตรวจจับ Order Block ใน SMC [2] และในส่วนของการแสดงผล การใช้ไลบรารี TradingView Lightweight Charts [5] ช่วยให้การเรนเดอร์ข้อมูลราคาแบบแท่งเทียนเชิงโต้ตอบบนเว็บแอปพลิเคชันมีประสิทธิภาพสูงและรองรับข้อมูลความละเอียดสูงได้เป็นอย่างดี [2]
+030 | Normal               | 3. การออกแบบและสถาปัตยกรรมระบบ
+031 | Normal               | 3.1 สถาปัตยกรรมระบบ
+032 | Normal               | ระบบประกอบด้วย 3 ส่วนการทำงานหลัก
+033 | Normal               | 1) ส่วนรับข้อมูล (Input): รับค่าคู่เงินและกรอบเวลาจากผู้ใช้
+034 | Normal               | 2) ส่วนประมวลผล (Process): ดึงข้อมูล OHLCV ผ่าน API ประมวลผลจุด Swing, BOS, CHoCH และ Order Block ด้วยอัลกอริทึมหลัก พร้อมทั้งส่งต่อไปยัง Multi-Timeframe Engine และ Scoring System
+035 | Normal               | 3) ส่วนแสดงผล (Output): ส่งออกกราฟแท่งเทียนพล็อตเส้นโครงสร้างและกระดานสรุปผล
+036 | Normal               | 
+037 | Normal               | ภาพ 1 แผนภาพการทำงานของระบบวิเคราะห์ SMC
+038 | Normal               | 3.2 ตัวแบบทางคณิตศาสตร์สำหรับการตรวจจับจุดสวิง (Swing Detection)
+039 | Normal               | ระบบตรวจจับจุด Swing High () และ Swing Low () ด้วยการกำหนดหน้าต่างการตรวจสอบ  แท่งเทียนย้อนหลัง (Look-back) และล่วงหน้า (Look-forward) [2] โดยที่ราคาของแท่งเทียนที่เวลา  จะถูกจำแนกเป็นจุดสวิงตามเงื่อนไขสมการ (1) และ (2) [1]:
+040 | Normal               | 
+041 | Normal               | 
+042 | Normal               | 
+043 | Normal               | 
+044 | Normal               | 
+045 | Normal               | 3.3กฎเกณฑ์เชิงตรรกะสำหรับ BOS และ CHoCH 
+046 | Normal               | เมื่อระบุตำแหน่งจุดสวิงได้แล้ว อัลกอริทึมจะประเมินการเบรกโครงสร้างราคา [2]
+047 | Normal               | - Break of Structure (BOS): ในแนวโน้มขาขึ้น สัญญาณ Bullish BOS จะเกิดขึ้นเมื่อราคาปิดของแท่งเทียนปัจจุบัน () เคลื่อนที่ทะลุระดับราคาสูงสุดของ Swing High ล่าสุด () หรือ  ในทางตรงกันข้าม สัญญาณ Bearish BOS จะเกิดขึ้นเมื่อ  [2]
+048 | Normal               | - Change of Character (CHoCH): เกิดขึ้นเมื่อราคาปิดเคลื่อนที่ทะลุจุดสวิงที่มีนัยสำคัญในทิศทางตรงกันข้ามกับแนวโน้มหลักก่อนหน้า เช่น การที่ราคาหลุดต่ำกว่า Swing Low สำคัญล่าสุดในโครงสร้างขาขึ้น บ่งชี้ถึงการเสียทรงราคาและการกลับทิศทางของแนวโน้ม [2]
+049 | Normal               | - Order Block Identification: เมื่อเกิด BOS หรือ CHoCH อัลกอริทึมจะย้อนกลับไปค้นหาแท่งเทียนขั้วตรงข้ามสุดท้ายก่อนการเกิดแรงผลักดันนั้น (เช่น แท่งเทียนขาลงสุดท้ายก่อนเกิด Bullish BOS) และบันทึกช่วงราคาต่ำสุด-สูงสุดของแท่งเทียนดังกล่าวเพื่อกำหนดเป็นโซน Order Block อัตโนมัติ [2]
+050 | Normal               | 3.4 ตัวแบบการถ่วงน้ำหนักพหุกรอบเวลา (Multi-Timeframe Scoring Model)
+051 | Normal               | เพื่อบูรณาการข้อมูลแนวโน้มครอบคลุม 7 กรอบเวลา (ตั้งแต่ Weekly จนถึง 5-Minute) ระบบได้พัฒนา Scoring System โดยคำนวณคะแนนทิศทางสุทธิ () ดังสมการ (3) [1, 2
+052 | Normal               | 
+053 | Normal               | 
+054 | Normal               | โดยที่ wk คือค่าน้ำหนักความสำคัญของกรอบเวลาที่ k ซึ่งสอดคล้องกับข้อกำหนดผลรวมค่าน้ำหนักเท่ากับ 1.0 [2] และ Dk มีค่าอยู่ในช่วง {-1, 0, 1} แทนสถานะแนวโน้มของกรอบเวลานั้น (-1: แนวโน้มขาลง, 0: ไร้ทิศทาง, 1: แนวโน้มขาขึ้น) [2] ดังแสดงการกำหนดค่าน้ำหนักในตาราง 2 [2]
+055 | Normal               | ตาราง 2 การกำหนดค่าน้ำหนักความสำคัญของทั้ง 7 กรอบเวลาใน Scoring System
+056 | Normal               | 
+057 | Body Text Indent 2   | 3.5 รหัสเทียมสำหรับอัลกอริทึมหลัก (Algorithmic Logic & Pseudocode)
+058 | Body Text Indent 2   | ขั้นตอนการทำงานของอัลกอริทึมในการสแกนโครงสร้างและการให้คะแนนแสดงดังรหัสเทียมต่อไปนี้ [2]
+059 | Body Text Indent 2   | Algorithm 1: Rule-based SMC Structure & Zone Detection
+060 | Body Text Indent 2   | Input: Historical OHLCV dataframe, Window size N
+061 | Body Text Indent 2   | Output: Sets of Swing_Points, BOS_List, CHOCH_List, Order_Blocks
+062 | Body Text Indent 2   | 
+063 | Body Text Indent 2   | 1: For each candle t from N to Length(OHLCV) - N do:
+064 | Body Text Indent 2   | 2:    If High[t] == Max(High[t-N : t+N]) then
+065 | Body Text Indent 2   | 3:       Swing_Points.append(Type: "Swing_High", Index: t, Price: High[t])
+066 | Body Text Indent 2   | 4:    If Low[t] == Min(Low[t-N : t+N]) then
+067 | Body Text Indent 2   | 5:       Swing_Points.append(Type: "Swing_Low", Index: t, Price: Low[t])
+068 | Body Text Indent 2   | 6: End For
+069 | Body Text Indent 2   | 
+070 | Body Text Indent 2   | 7: For each candle t in OHLCV do:
+071 | Body Text Indent 2   | 8:    If Close[t] > Recent_Swing_High.Price and Trend == "Bullish" then
+072 | Body Text Indent 2   | 9:       BOS_List.append(Type: "Bullish_BOS", Index: t)
+073 | Body Text Indent 2   | 10:      Order_Blocks.append(Find_Last_Bearish_Candle_Before(t))
+074 | Body Text Indent 2   | 11:   Else If Close[t] < Recent_Swing_Low.Price and Trend == "Bullish" then
+075 | Body Text Indent 2   | 12:      CHOCH_List.append(Type: "Bearish_CHOCH", Index: t)
+076 | Body Text Indent 2   | 13:      Trend = "Bearish"
+077 | Body Text Indent 2   | 14:   End If
+078 | Body Text Indent 2   | 15: End For
+079 | Body Text Indent 2   | 16: Return Swing_Points, BOS_List, CHOCH_List, Order_Blocks
+080 | Body Text Indent 2   | 4. การพัฒนาและการแสดงผลของระบบ
+081 | Body Text Indent 2   | 4.1 สถาปัตยกรรมซอฟต์แวร์และเครื่องมือที่ใช้พัฒนา
+082 | Body Text Indent 2   | ระบบถูกพัฒนาขึ้นโดยใช้ภาษา Python ในการประมวลผลข้อมูลแกนหลัก [2] โดยใช้ไลบรารี Pandas และ NumPy สำหรับการคำนวณเมทริกซ์และข้อมูลอนุกรมเวลาทางการเงิน [2] เชื่อมต่อกับ Data Fetching API ในการดึงข้อมูล OHLCV ประวัติศาสตร์ [2] ส่วนติดต่อผู้ใช้ (Frontend) ใช้เทคโนโลยีเว็บร่วมกับไลบรารี TradingView Lightweight Charts เพื่อเรนเดอร์กราฟิกราคาความละเอียดสูงที่ทำงานได้รวดเร็วบนเบราว์เซอร์ [2]
+083 | Body Text Indent 2   | 4.2 ฟังก์ชันการทำงานหลักของระบบ
+084 | Body Text Indent 2   | ระบบประกอบด้วย 4 ฟังก์ชันหลักที่ช่วยสนับสนุนการวิเคราะห์ [2]
+085 | Body Text Indent 2   | 1) Interactive Charting: กราฟแท่งเทียนเชิงโต้ตอบที่สามารถซูม เลื่อนดูประวัติราคา และเลือกเปลี่ยนคู่เงินหรือกรอบเวลาได้ตามต้องการ [2]
+086 | Body Text Indent 2   | 2) Automated Structure Overlay: การวาดเส้นเชื่อมจุด Swing High/Low พร้อมข้อความกำกับตำแหน่ง BOS และ CHoCH ลงบนกราฟแบบอัตโนมัติ [2]
+087 | Body Text Indent 2   | 3) Price Zone Highlighting: การแสดงแถบสีโปร่งใสระบุพื้นที่ Order Blocks, FVG และระดับ Equal High/Low [2]
+088 | Body Text Indent 2   | 4) Multi-Timeframe Status Dashboard: กระดานสรุปผลลัพธ์คะแนนสุทธิและทิศทางตลาดทั้ง 7 กรอบเวลา ช่วยให้นักเทรดประเมินสภาวะตลาดได้ในหน้าจอเดียว [2]
+089 | Body Text Indent 2   | 
+090 | Body Text Indent 2   | 
+091 | Body Text Indent 2   | ภาพ 2 ส่วนแสดงผลกราฟแท่งเทียนเชิงโต้ตอบพร้อมเส้นโครงสร้าง SMC และ Order Block
+092 | Body Text Indent 2   | 
+093 | Body Text Indent 2   | ภาพ 3 ส่วนแสดงผลกระดานข้อมูลสรุปสถานะตลาดและการถ่วงน้ำหนักแนวโน้ม 7 กรอบเวลา
+094 | Body Text Indent 2   | 5. การวิเคราะห์กรณีศึกษาและการอภิปรายผล
+095 | Body Text Indent 2   | 5.1 กรณีศึกษาที่ 1 การตรวจจับแนวโน้มต่อเนื่อง (Trend Continuation & BOS)
+096 | Body Text Indent 2   | ในการทดสอบอัลกอริทึมกับสภาวะตลาดที่มีแนวโน้มขาขึ้นอย่างต่อเนื่อง ระบบทำการตรวจสอบจุด Swing High ล่าสุด เมื่อราคาปิดของแท่งเทียนถัดไปสามารถยืนเหนือระดับราคาดังกล่าวได้ อัลกอริทึมจะวาดเส้นระบุเป็น Bullish BOS ทันที พร้อมทั้งคำนวณหาโซน Order Block ที่เป็นฐานส่งราคา การทดสอบแสดงให้เห็นว่าระบบสามารถระบุการดำเนินต่อไปของแนวโน้มได้อย่างเป็นปรนัยโดยไม่มีความผันแปรตามมุมมองของผู้ประเมิน [2]
+097 | Body Text Indent 2   | 5.2 กรณีศึกษาที่ 2 การตรวจจับการกลับตัวของแนวโน้ม (Trend Reversal & CHoCH)
+098 | Body Text Indent 2   | ในกรณีที่โครงสร้างตลาดเริ่มสูญเสียแรงผลักดันและราคาปิดหลุดต่ำกว่า Swing Low ก่อนหน้า อัลกอริทึมจะเปลี่ยนสถานะการประเมินจากแนวโน้มขาขึ้นและสร้างสัญญาณ Bearish CHoCH บนกราฟโดยอัตโนมัติ ซึ่งช่วยแจ้งเตือนการเปลี่ยนโครงสร้างราคาได้เร็วกว่าการรอตัดเส้นค่าเฉลี่ยแบบดั้งเดิม และช่วยขจัดอคติทางอารมณ์ที่มักคาดหวังให้ราคาปรับตัวขึ้นต่อ [2]
+099 | Body Text Indent 2   | 5.3 กรณีศึกษาที่ 3 การแก้ไขความขัดแย้งของสัญญาณหลายกรอบเวลา
+100 | Body Text Indent 2   | ในสภาวะที่กรอบเวลาสั้น (เช่น 5-Minute และ 15-Minute) แสดงการเกิด Bearish CHoCH แต่กรอบเวลาหลัก (Weekly และ Daily) ยังคงเป็นแนวโน้มขาขึ้นที่แข็งแกร่ง ระบบ Scoring System จะคำนวณคะแนนถ่วงน้ำหนักโดยให้ความสำคัญกับกรอบเวลาขนาดใหญ่ ส่งผลให้คะแนนรวม  ยังคงมีค่าเป็นบวก ระบบจึงแจ้งเตือนว่าการปรับตัวลงในกรอบเวลาสั้นเป็นเพียงการพักตัว (Pullback) ภายในโครงสร้างใหญ่ ซึ่งช่วยป้องกันไม่ให้นักลงทุนเปิดสถานะเทรดสวนทางกับแนวโน้มหลักของตลาด [2]
+101 | Body Text Indent 2   | 5.4 การอภิปรายผลและข้อจำกัดของระบบ
+102 | Body Text Indent 2   | การนำ Rule-based Algorithm มาประยุกต์ใช้ช่วยแก้ปัญหาความไม่เป็นปรนัยได้อย่างสมบูรณ์และสามารถทำซ้ำได้ตามเกณฑ์ความสำเร็จของโครงงาน [2] อย่างไรก็ดี ระบบมีข้อจำกัดด้านความล่าช้าเชิงเวลา (Time Lag) ในการยืนยันจุดสวิง เนื่องจากเทคนิค Look-forward จำเป็นต้องรอให้แท่งเทียนปิดตัวครบ  แท่งก่อน จึงจะยืนยันจุดสวิงได้อย่างสมบูรณ์ [2] ซึ่งถือเป็นข้อแลกเปลี่ยน (Trade-off) ที่จำเป็นเพื่อให้ได้ข้อมูลโครงสร้างที่แม่นยำและปราศจากสัญญาณหลอก [2]
+103 | Body Text Indent 2   | 6. สรุปผลและประโยชน์ที่ได้รับ
+104 | Body Text Indent 2   | 	งานวิจัยนี้ได้พัฒนาเครื่องมืออัตโนมัติด้วยภาษา Python สำหรับการวิเคราะห์และแสดงผลโครงสร้างตลาดการเงินตามแนวคิด Smart Money Concepts (SMC) ได้สำเร็จตามวัตถุประสงค์ [2] ระบบได้รวมศูนย์การคำนวณอัลกอริทึมเชิงกฎเกณฑ์ การวิเคราะห์พหุกรอบเวลาแบบถ่วงน้ำหนัก และการแสดงผลบนกราฟเชิงโต้ตอบไว้ด้วยกันอย่างเป็นระบบ [2] ซึ่งก่อให้เกิดประโยชน์สำคัญ 3 ประการ [2] 1) *ประหยัดเวลาและลดข้อผิดพลาด* เป็นเครื่องมือช่วยสแกนและ Backtest กลยุทธ์ SMC แบบอัตโนมัติที่ให้ผลลัพธ์เป็นปรนัย ขจัดความผิดพลาดและภาระงานจากการตีเส้นกราฟด้วยตนเอง [2] 2) *เพิ่มประสิทธิภาพการตัดสินใจ*: ระบบ Dashboard และ Scoring System ช่วยประมวลผลแนวโน้ม 7 กรอบเวลาอย่างรอบด้าน ป้องกันการเทรดสวนแนวโน้มหลัก และลดอคติทางอารมณ์ของนักลงทุน [2] 3) *เป็นสื่อการเรียนรู้เชิงประจักษ์*: ช่วยให้ผู้ที่ศึกษากลยุทธ์ SMC สามารถทำความเข้าใจกฎเกณฑ์และโครงสร้างตลาดผ่านระเบียบวิธีทางคณิตศาสตร์ที่โปร่งใสและตรวจสอบได้ [2]
+105 | Body Text Indent 2   | เอกสารอ้างอิง
+106 | Normal               | [1] European Securities and Markets Authority (ESMA). (2019). Financial Stability Report: Retail Trading in Derivatives and CFDs. Authority. 
+107 | Normal               | [2] A. W. Lo, H. Mamaysky, and J. Wang, "Foundations of Technical Analysis: Computational Algorithms, Statistical Inference, and Empirical Implementation," The Journal of Finance, vol. 55, no. 4, pp. 1705-1765, 2000. 
+108 | Normal               | [3] A. S. Babu and B. K. Reddy, "Automating Stock Market Structure Analysis using Python," IRJET, 2020. 
+109 | Normal               | [4] R. Cont, A. Kukanov, and S. Stoikov, "The Price Impact of Order Book Events," Journal of Financial Econometrics, vol. 12, no. 1, pp. 47-88, 2014. 
+110 | Normal               | [5] TradingView, "Lightweight Charts Documentation," [Online]. Available: TradingView Lightweight Charts Library.
+111 | Normal               | 
+112 | Normal               | 

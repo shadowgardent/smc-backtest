@@ -1,0 +1,19 @@
+{
+  "name": "smc-aucc2026-slidev-presentation",
+  "private": true,
+  "scripts": {
+    "dev": "slidev slides.md --open",
+    "build": "slidev build slides.md",
+    "export": "slidev export slides.md --timeout 60000",
+    "export-pptx": "slidev export slides.md --format pptx --timeout 60000"
+  },
+  "dependencies": {
+    "@slidev/cli": "^51.0.0",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.49.0"
+  }
+}

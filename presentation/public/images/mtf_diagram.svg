@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgMtf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F0F7FF"/>
+    </linearGradient>
+    <linearGradient id="titleMtf" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="680" height="440" rx="16" fill="url(#bgMtf)" stroke="#93C5FD" stroke-width="2"/>
+
+  <!-- Header -->
+  <rect x="16" y="14" width="648" height="42" rx="10" fill="url(#titleMtf)"/>
+  <text x="32" y="40" font-family="Segoe UI, sans-serif" font-size="15.5" font-weight="700" fill="#FFFFFF">
+    MULTI-TIMEFRAME CONFLUENCE SCORING (7 TFs: W1 to M5)
+  </text>
+
+  <!-- Left Panel: 7 Timeframes Weight Pyramid / Bars -->
+  <rect x="24" y="68" width="330" height="284" rx="12" fill="#FFFFFF" stroke="#93C5FD" stroke-width="1.8"/>
+  <text x="40" y="92" font-family="Segoe UI, sans-serif" font-size="13.5" font-weight="700" fill="#0F172A">
+    ค่าน้ำหนักแต่ละกรอบเวลา (Weights = 13 คะแนน)
+  </text>
+
+  <!-- W1 -->
+  <rect x="40" y="106" width="52" height="28" rx="6" fill="#0F172A"/>
+  <text x="66" y="125" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFF">W1</text>
+  <rect x="100" y="106" width="180" height="28" rx="6" fill="#1E3A8A"/>
+  <text x="190" y="125" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FFF">Weight = ±3 (n=3)</text>
+  <text x="315" y="125" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#1E3A8A">23%</text>
+
+  <!-- D1 -->
+  <rect x="40" y="140" width="52" height="28" rx="6" fill="#0F172A"/>
+  <text x="66" y="159" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFF">D1</text>
+  <rect x="100" y="140" width="180" height="28" rx="6" fill="#1E3A8A"/>
+  <text x="190" y="159" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FFF">Weight = ±3 (n=3)</text>
+  <text x="315" y="159" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#1E3A8A">23%</text>
+
+  <!-- H4 -->
+  <rect x="40" y="174" width="52" height="28" rx="6" fill="#1D4ED8"/>
+  <text x="66" y="193" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFF">H4</text>
+  <rect x="100" y="174" width="135" height="28" rx="6" fill="#2563EB"/>
+  <text x="167" y="193" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FFF">Weight = ±2</text>
+  <text x="315" y="193" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#2563EB">15%</text>
+
+  <!-- H1 -->
+  <rect x="40" y="208" width="52" height="28" rx="6" fill="#1D4ED8"/>
+  <text x="66" y="227" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFF">H1</text>
+  <rect x="100" y="208" width="135" height="28" rx="6" fill="#2563EB"/>
+  <text x="167" y="227" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FFF">Weight = ±2</text>
+  <text x="315" y="227" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#2563EB">15%</text>
+
+  <!-- M30 -->
+  <rect x="40" y="242" width="52" height="28" rx="6" fill="#3B82F6"/>
+  <text x="66" y="261" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFF">M30</text>
+  <rect x="100" y="242" width="90" height="28" rx="6" fill="#60A5FA"/>
+  <text x="145" y="261" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#0F172A">Weight = ±1</text>
+  <text x="315" y="261" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#475569">8%</text>
+
+  <!-- M15 -->
+  <rect x="40" y="276" width="52" height="28" rx="6" fill="#3B82F6"/>
+  <text x="66" y="295" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFF">M15</text>
+  <rect x="100" y="276" width="90" height="28" rx="6" fill="#60A5FA"/>
+  <text x="145" y="295" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#0F172A">Weight = ±1</text>
+  <text x="315" y="295" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#475569">8%</text>
+
+  <!-- M5 -->
+  <rect x="40" y="310" width="52" height="28" rx="6" fill="#3B82F6"/>
+  <text x="66" y="329" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFF">M5</text>
+  <rect x="100" y="310" width="90" height="28" rx="6" fill="#60A5FA"/>
+  <text x="145" y="329" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#0F172A">Weight = ±1</text>
+  <text x="315" y="329" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#475569">8%</text>
+
+  <!-- Right Panel: Decision Thresholds & H4 Radar -->
+  <rect x="370" y="68" width="286" height="284" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.8"/>
+  <text x="386" y="92" font-family="Segoe UI, sans-serif" font-size="13.5" font-weight="700" fill="#0F172A">
+    เกณฑ์ตัดสินสัญญาณ (Score Range: -13 ถึง +13)
+  </text>
+
+  <rect x="386" y="106" width="254" height="36" rx="8" fill="#1E3A8A"/>
+  <text x="513" y="129" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFFFFF">
+    Score &gt;= +5  →  Strong BUY
+  </text>
+
+  <rect x="386" y="148" width="254" height="34" rx="8" fill="#2563EB"/>
+  <text x="513" y="170" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFFFFF">
+    0 &lt; Score &lt; +5 →  Weak BUY
+  </text>
+
+  <rect x="386" y="188" width="254" height="34" rx="8" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="513" y="210" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#1E3A8A">
+    Score == 0   →  Sideways (WAIT)
+  </text>
+
+  <rect x="386" y="228" width="254" height="34" rx="8" fill="#334155"/>
+  <text x="513" y="250" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFFFFF">
+    -5 &lt; Score &lt; 0 →  Weak SELL
+  </text>
+
+  <rect x="386" y="268" width="254" height="36" rx="8" fill="#0F172A"/>
+  <text x="513" y="291" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#FFFFFF">
+    Score &lt;= -5  →  Strong SELL
+  </text>
+
+  <rect x="386" y="312" width="254" height="28" rx="6" fill="#DBEAFE"/>
+  <text x="513" y="330" text-anchor="middle" font-family="Consolas, monospace" font-size="11.5" font-weight="700" fill="#1E3A8A">
+    + H4 Radar: OB/FVG &amp; EQH/EQL Targets
+  </text>
+
+  <!-- Bottom Equation Box -->
+  <rect x="24" y="364" width="632" height="60" rx="10" fill="#0F172A"/>
+  <text x="340" y="388" text-anchor="middle" font-family="Consolas, monospace" font-size="13.5" font-weight="700" fill="#93C5FD">
+    S_total = Σ (w_k × D_k)   โดยที่  D_k = +1 (Bullish), -1 (Bearish), 0 (Neutral)
+  </text>
+  <text x="340" y="410" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" fill="#FFFFFF">
+    ช่วยให้เทรดเดอร์เห็นภาพใหญ่ (Macro Trend: W1/D1) สอดประสานกับจังหวะเข้าเทรด (Micro Entry: M15/M5) ในหน้าเดียว
+  </text>
+</svg>

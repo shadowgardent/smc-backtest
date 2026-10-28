@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgChoch" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F0F7FF"/>
+    </linearGradient>
+    <linearGradient id="titleChoch" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="680" height="440" rx="16" fill="url(#bgChoch)" stroke="#93C5FD" stroke-width="2"/>
+
+  <!-- Header -->
+  <rect x="16" y="14" width="648" height="42" rx="10" fill="url(#titleChoch)"/>
+  <text x="32" y="40" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+    BOS &amp; CHoCH — Finite State Machine (Market Structure Shift)
+  </text>
+
+  <!-- Background Grid -->
+  <g stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4">
+    <line x1="30" y1="115" x2="650" y2="115"/>
+    <line x1="30" y1="185" x2="650" y2="185"/>
+    <line x1="30" y1="255" x2="650" y2="255"/>
+    <line x1="30" y1="325" x2="650" y2="325"/>
+  </g>
+
+  <!-- Price ZigZag Structure Path -->
+  <polyline points="45,310 115,205 165,265 245,135 305,220 385,95 465,275 525,195 615,335"
+            fill="none" stroke="#2563EB" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- BOS 1 Dashed Line -->
+  <line x1="115" y1="205" x2="215" y2="205" stroke="#2563EB" stroke-width="2" stroke-dasharray="6,4"/>
+  <rect x="132" y="180" width="68" height="22" rx="6" fill="#2563EB"/>
+  <text x="166" y="195" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#FFFFFF">BOS (Up)</text>
+
+  <!-- BOS 2 Dashed Line -->
+  <line x1="245" y1="135" x2="360" y2="135" stroke="#2563EB" stroke-width="2" stroke-dasharray="6,4"/>
+  <rect x="268" y="110" width="68" height="22" rx="6" fill="#2563EB"/>
+  <text x="302" y="125" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#FFFFFF">BOS (Up)</text>
+
+  <!-- CHoCH Dashed Line (Break of Last Swing Low at y=220) -->
+  <line x1="305" y1="220" x2="450" y2="220" stroke="#0F172A" stroke-width="2.5" stroke-dasharray="6,3"/>
+  <rect x="330" y="226" width="112" height="26" rx="6" fill="#0F172A" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="386" y="243" text-anchor="middle" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FFFFFF">CHoCH (Flip!)</text>
+
+  <!-- Bearish BOS Dashed Line (Break below y=275) -->
+  <line x1="465" y1="275" x2="585" y2="275" stroke="#1E3A8A" stroke-width="2" stroke-dasharray="6,4"/>
+  <rect x="490" y="281" width="80" height="22" rx="6" fill="#1E3A8A"/>
+  <text x="530" y="296" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#FFFFFF">BOS (Down)</text>
+
+  <!-- Swing Nodes -->
+  <circle cx="115" cy="205" r="6" fill="#2563EB" stroke="#FFF" stroke-width="2"/>
+  <text x="115" y="193" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#1E3A8A">SH1</text>
+
+  <circle cx="165" cy="265" r="6" fill="#3B82F6" stroke="#FFF" stroke-width="2"/>
+  <text x="165" y="285" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#1E3A8A">SL1</text>
+
+  <circle cx="245" cy="135" r="6" fill="#2563EB" stroke="#FFF" stroke-width="2"/>
+  <text x="245" y="123" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#1E3A8A">SH2</text>
+
+  <circle cx="305" cy="220" r="7" fill="#0F172A" stroke="#FFF" stroke-width="2"/>
+  <text x="292" y="240" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#0F172A">last_sl</text>
+
+  <circle cx="385" cy="95" r="7" fill="#1E3A8A" stroke="#FFF" stroke-width="2"/>
+  <text x="385" y="83" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#1E3A8A">Peak HH</text>
+
+  <circle cx="465" cy="275" r="6" fill="#0F172A" stroke="#FFF" stroke-width="2"/>
+  <text x="465" y="295" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#0F172A">LL1</text>
+
+  <circle cx="525" cy="195" r="6" fill="#1E3A8A" stroke="#FFF" stroke-width="2"/>
+  <text x="525" y="182" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#1E3A8A">LH1</text>
+
+  <!-- Breakout Candle Body Highlight at CHoCH -->
+  <rect x="434" y="198" width="14" height="44" rx="2" fill="#0F172A" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="505" y="224" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#0F172A">← Close &lt; last_sl</text>
+
+  <!-- FSM State Transition Box at Bottom -->
+  <rect x="24" y="362" width="632" height="64" rx="10" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.8"/>
+  <text x="40" y="385" font-family="Segoe UI, sans-serif" font-size="13" font-weight="700" fill="#1E3A8A">
+    Finite State Machine (FSM) Rules — ใช้ราคาปิด (Close Price) ยืนยันการทะลุ:
+  </text>
+  <text x="40" y="405" font-family="Consolas, monospace" font-size="12" fill="#0F172A">
+    • Close &gt; last_sh : if trend == "bearish" → CHoCH (Flip to Bullish) | else → BOS (Bullish Cont.)
+  </text>
+  <text x="40" y="421" font-family="Consolas, monospace" font-size="12" fill="#0F172A">
+    • Close &lt; last_sl : if trend == "bullish" → CHoCH (Flip to Bearish) | else → BOS (Bearish Cont.)
+  </text>
+</svg>

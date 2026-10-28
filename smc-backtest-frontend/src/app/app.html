@@ -1,0 +1,465 @@
+<main class="main-container">
+  
+  <!-- Navigation Top Bar -->
+  <div class="top-nav">
+    <h1 class="title">📈 SMC Backtest Engine</h1>
+    <div class="nav-links">
+      <button class="nav-btn" [class.active]="currentPage === 'chart'" (click)="currentPage = 'chart'">📈 Chart</button>
+      <button class="nav-btn" [class.active]="currentPage === 'dashboard'" (click)="openDashboard()">📊 Dashboard</button>
+      <button class="nav-btn" [class.active]="currentPage === 'backtest'" (click)="openBacktest()">🧪 Backtest</button>
+    </div>
+  </div>
+
+  <!-- ================= CHART PAGE ================= -->
+  <div [style.display]="currentPage === 'chart' ? 'block' : 'none'">
+    <div class="controls-row">
+      <!-- Symbol Dropdown -->
+      <div class="button-group">
+        <span class="group-label">Symbol:</span>
+        <select #symbolSelect class="custom-select" [value]="activeSymbol" (change)="loadData(activeTimeframe, symbolSelect.value)" [disabled]="isLoadingChart">
+          @for (sym of symbols; track sym) {
+            <option [value]="sym">{{ sym }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Timeframe -->
+      <div class="button-group">
+        <span class="group-label">Timeframe:</span>
+        @for (tf of ['M5','M15','M30','H1','H4']; track tf) {
+          <button class="btn tf-btn" [class.active]="activeTimeframe === tf" (click)="loadData(tf)" [disabled]="isLoadingChart">{{ tf }}</button>
+        }
+      </div>
+
+      <!-- Live Toggle + Price -->
+      <div class="button-group">
+        <button class="btn live-btn" [class.live-active]="isLive" (click)="toggleLive()">
+          {{ isLive ? '🔴 LIVE' : '⏸ PAUSED' }}
+        </button>
+        @if (currentPrice) {
+          <span class="current-price">{{ formatPrice(currentPrice) }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="button-group relative dropdown-container">
+        <button class="btn dropdown-btn" (click)="isLayersOpen = !isLayersOpen">
+          👁️ Show SMC Layers ▾
+        </button>
+
+        @if (isLayersOpen) {
+          <div class="dropdown-menu">
+            
+            <div class="dropdown-section">
+              <span class="dropdown-header">Swing Structure</span>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showSwings" (change)="toggleSwings()"> ▲▼ H/L</label>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showStructure" (change)="toggleStructure()"> 📏 BOS / CHoCH</label>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showOrderBlocks" (change)="toggleOrderBlocks()"> 📦 Order Blocks</label>
+            </div>
+
+            <div class="dropdown-section">
+              <span class="dropdown-header">Internal Structure</span>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showInternalSwings" (change)="toggleInternalSwings()"> ▲▼ Int. H/L</label>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showInternalStructure" (change)="toggleInternalStructure()"> 📏 Int. BOS / CHoCH</label>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showInternalOrderBlocks" (change)="toggleInternalOrderBlocks()"> 📦 Int. Order Blocks</label>
+            </div>
+
+            <div class="dropdown-section">
+              <span class="dropdown-header">Liquidity & Zones</span>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showFVG" (change)="toggleFVG()"> 🧲 FVG</label>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showEqualHL" (change)="toggleEqualHL()"> ≈ EQH / EQL</label>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showZones" (change)="toggleZones()"> ◫ Premium/Discount</label>
+              <label class="dropdown-item"><input type="checkbox" [checked]="showStrongWeakHL" (change)="toggleStrongWeakHL()"> ★ Strong/Weak H/L</label>
+            </div>
+
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      @if (isLoadingChart) { <span class="status-item loading">⏳ Loading chart...</span> }
+      @if (isLoadingSmc)   { <span class="status-item loading">🔍 Analysing SMC...</span> }
+      @if (!isLoadingChart && !isLoadingSmc && smcData) {
+        <span class="status-item done">
+          ✅ {{ smcData.symbol }} · {{ smcData.timeframe }} ·
+          Swing: {{ smcData.swing_highs.length }}H/{{ smcData.swing_lows.length }}L ·
+          Struct: {{ smcData.swing_structure.length }} ·
+          OB: {{ smcData.order_blocks.length }} ·
+          FVG: {{ smcData.fvgs.length }} ·
+          EQH: {{ smcData.equal_highs.length }} EQL: {{ smcData.equal_lows.length }}
+        </span>
+      }
+    </div>
+
+    <!-- Chart -->
+    <div id="chartContainer" class="chart-container" (contextmenu)="onRightClick($event)">
+      <canvas id="smcCanvas" class="smc-canvas"></canvas>
+    </div>
+
+    <!-- Context Menu -->
+    @if (showContextMenu) {
+      <div class="context-menu" [style.left.px]="contextMenuX" [style.top.px]="contextMenuY">
+        <div class="context-menu-item" (click)="resetChartView()">
+          🔄 Reset Chart View
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ================= DASHBOARD PAGE ================= -->
+  @if (currentPage === 'dashboard') {
+    <div class="dashboard-page">
+
+      <!-- 1. Multi-Symbol Matrix -->
+      <div class="matrix-section">
+        <div class="section-title">
+          <h2>🌐 Market Matrix (สแกนทุกคู่เงิน)</h2>
+          <button class="btn" (click)="loadMatrix()" [disabled]="isLoadingMatrix">🔄 Refresh Matrix</button>
+        </div>
+        
+        @if (isLoadingMatrix) {
+          <div class="matrix-loading center">
+            <div class="loader-spinner small"></div>
+            <span>กำลังสแกนทุกคู่เงิน...</span>
+          </div>
+        } @else {
+          <div class="matrix-table-container">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>W1</th><th>D1</th><th>H4</th><th>H1</th><th>M30</th><th>M15</th><th>M5</th>
+                  <th>Score</th>
+                  <th>Signal</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of matrixData; track row.symbol) {
+                  <tr [class.highlight]="row.symbol === dashboardSymbol">
+                    <td class="sym-col">{{ row.symbol }}</td>
+                    <td [class.bullish-text]="row.trends.W1==='bullish'" [class.bearish-text]="row.trends.W1==='bearish'">{{ row.trends.W1==='bullish'?'▲':(row.trends.W1==='bearish'?'▼':'-') }}</td>
+                    <td [class.bullish-text]="row.trends.D1==='bullish'" [class.bearish-text]="row.trends.D1==='bearish'">{{ row.trends.D1==='bullish'?'▲':(row.trends.D1==='bearish'?'▼':'-') }}</td>
+                    <td [class.bullish-text]="row.trends.H4==='bullish'" [class.bearish-text]="row.trends.H4==='bearish'">{{ row.trends.H4==='bullish'?'▲':(row.trends.H4==='bearish'?'▼':'-') }}</td>
+                    <td [class.bullish-text]="row.trends.H1==='bullish'" [class.bearish-text]="row.trends.H1==='bearish'">{{ row.trends.H1==='bullish'?'▲':(row.trends.H1==='bearish'?'▼':'-') }}</td>
+                    <td [class.bullish-text]="row.trends.M30==='bullish'" [class.bearish-text]="row.trends.M30==='bearish'">{{ row.trends.M30==='bullish'?'▲':(row.trends.M30==='bearish'?'▼':'-') }}</td>
+                    <td [class.bullish-text]="row.trends.M15==='bullish'" [class.bearish-text]="row.trends.M15==='bearish'">{{ row.trends.M15==='bullish'?'▲':(row.trends.M15==='bearish'?'▼':'-') }}</td>
+                    <td [class.bullish-text]="row.trends.M5==='bullish'" [class.bearish-text]="row.trends.M5==='bearish'">{{ row.trends.M5==='bullish'?'▲':(row.trends.M5==='bearish'?'▼':'-') }}</td>
+                    <td [class.bullish-text]="row.score > 0" [class.bearish-text]="row.score < 0">{{ row.score > 0 ? '+' : '' }}{{ row.score }}</td>
+                    <td>
+                      <span class="badge" [class.badge-buy]="row.signal==='BUY'" [class.badge-sell]="row.signal==='SELL'">{{ row.signal }}</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm" (click)="dashboardSymbol = row.symbol; loadDashboard()">เจาะลึก 🔍</button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+
+      <!-- 2. Detailed Symbol Analysis -->
+      <div class="dashboard-header-page">
+        <div class="button-group">
+          <span class="group-label">เจาะลึกรายคู่เงิน (Detailed Analysis):</span>
+          <select #dashSymbol class="custom-select" [value]="dashboardSymbol" (change)="dashboardSymbol = dashSymbol.value; loadDashboard()" [disabled]="isLoadingDashboard">
+            @for (sym of symbols; track sym) {
+              <option [value]="sym">{{ sym }}</option>
+            }
+          </select>
+          <button class="btn" (click)="loadDashboard()" [disabled]="isLoadingDashboard">🔄 Refresh {{ dashboardSymbol }}</button>
+        </div>
+      </div>
+      
+      @if (isLoadingDashboard) {
+        <div class="dashboard-body-page center">
+          <div class="loader-spinner"></div>
+          <h2>⏳ กำลังวิเคราะห์ข้อมูลเชิงลึก...</h2>
+        </div>
+      } @else if (dashboardData) {
+        <div class="dashboard-body-page">
+          
+          <!-- MTFA Trend -->
+          <h3 class="card-title">📈 Multi-Timeframe Trend</h3>
+          <div class="tf-grid-page">
+            <div class="tf-item-page" [class.bullish]="dashboardData.trends.W1 === 'bullish'" [class.bearish]="dashboardData.trends.W1 === 'bearish'">
+              <span class="tf-label-page">Weekly (W1)</span>
+              <span class="tf-arrow-page">{{ dashboardData.trends.W1 === 'bullish' ? '▲' : (dashboardData.trends.W1 === 'bearish' ? '▼' : '▬') }}</span>
+              <span class="tf-text-page">{{ dashboardData.trends.W1 }}</span>
+            </div>
+            <div class="tf-item-page" [class.bullish]="dashboardData.trends.D1 === 'bullish'" [class.bearish]="dashboardData.trends.D1 === 'bearish'">
+              <span class="tf-label-page">Daily (D1)</span>
+              <span class="tf-arrow-page">{{ dashboardData.trends.D1 === 'bullish' ? '▲' : (dashboardData.trends.D1 === 'bearish' ? '▼' : '▬') }}</span>
+              <span class="tf-text-page">{{ dashboardData.trends.D1 }}</span>
+            </div>
+            <div class="tf-item-page" [class.bullish]="dashboardData.trends.H4 === 'bullish'" [class.bearish]="dashboardData.trends.H4 === 'bearish'">
+              <span class="tf-label-page">4 Hours (H4)</span>
+              <span class="tf-arrow-page">{{ dashboardData.trends.H4 === 'bullish' ? '▲' : (dashboardData.trends.H4 === 'bearish' ? '▼' : '▬') }}</span>
+              <span class="tf-text-page">{{ dashboardData.trends.H4 }}</span>
+            </div>
+            <div class="tf-item-page" [class.bullish]="dashboardData.trends.H1 === 'bullish'" [class.bearish]="dashboardData.trends.H1 === 'bearish'">
+              <span class="tf-label-page">1 Hour (H1)</span>
+              <span class="tf-arrow-page">{{ dashboardData.trends.H1 === 'bullish' ? '▲' : (dashboardData.trends.H1 === 'bearish' ? '▼' : '▬') }}</span>
+              <span class="tf-text-page">{{ dashboardData.trends.H1 }}</span>
+            </div>
+            <div class="tf-item-page" [class.bullish]="dashboardData.trends.M30 === 'bullish'" [class.bearish]="dashboardData.trends.M30 === 'bearish'">
+              <span class="tf-label-page">30 Mins (M30)</span>
+              <span class="tf-arrow-page">{{ dashboardData.trends.M30 === 'bullish' ? '▲' : (dashboardData.trends.M30 === 'bearish' ? '▼' : '▬') }}</span>
+              <span class="tf-text-page">{{ dashboardData.trends.M30 }}</span>
+            </div>
+            <div class="tf-item-page" [class.bullish]="dashboardData.trends.M15 === 'bullish'" [class.bearish]="dashboardData.trends.M15 === 'bearish'">
+              <span class="tf-label-page">15 Mins (M15)</span>
+              <span class="tf-arrow-page">{{ dashboardData.trends.M15 === 'bullish' ? '▲' : (dashboardData.trends.M15 === 'bearish' ? '▼' : '▬') }}</span>
+              <span class="tf-text-page">{{ dashboardData.trends.M15 }}</span>
+            </div>
+            <div class="tf-item-page" [class.bullish]="dashboardData.trends.M5 === 'bullish'" [class.bearish]="dashboardData.trends.M5 === 'bearish'">
+              <span class="tf-label-page">5 Mins (M5)</span>
+              <span class="tf-arrow-page">{{ dashboardData.trends.M5 === 'bullish' ? '▲' : (dashboardData.trends.M5 === 'bearish' ? '▼' : '▬') }}</span>
+              <span class="tf-text-page">{{ dashboardData.trends.M5 }}</span>
+            </div>
+          </div>
+
+          <div class="recommendation-box-page" [class.buy-signal]="dashboardData.signal === 'BUY'" [class.sell-signal]="dashboardData.signal === 'SELL'">
+            <div class="rec-title-page">💡 เทรนด์หลัก: {{ dashboardData.signal }}</div>
+            <div class="rec-desc-page">{{ dashboardData.recommendation }}</div>
+          </div>
+
+          <!-- Advanced SMC Info Cards -->
+          <div class="advanced-smc-grid">
+            
+            <!-- Radar -->
+            <div class="smc-card">
+              <div class="card-header">🔎 SMC Setup Radar (H4)</div>
+              <ul class="radar-list">
+                @for (msg of dashboardData.radar_signals; track msg) {
+                  <li>{{ msg }}</li>
+                }
+              </ul>
+            </div>
+
+            <!-- Premium/Discount -->
+            <div class="smc-card">
+              <div class="card-header">⚖️ Premium / Discount (H4)</div>
+              <div class="pd-status-text" [class.premium]="dashboardData.pd_status.includes('Premium')" [class.discount]="dashboardData.pd_status.includes('Discount')">
+                {{ dashboardData.pd_status }}
+              </div>
+            </div>
+
+            <!-- Liquidity Targets -->
+            <div class="smc-card">
+              <div class="card-header">🧲 Liquidity Targets (H4)</div>
+              <div class="liquidity-row">
+                <span class="liq-label up">🎯 เป้าด้านบน (EQH):</span>
+                <span class="liq-value">{{ dashboardData.liquidity_targets.upside ? dashboardData.liquidity_targets.upside : 'ไม่มีเป้าหมายใกล้เคียง' }}</span>
+              </div>
+              <div class="liquidity-row">
+                <span class="liq-label down">🎯 เป้าด้านล่าง (EQL):</span>
+                <span class="liq-value">{{ dashboardData.liquidity_targets.downside ? dashboardData.liquidity_targets.downside : 'ไม่มีเป้าหมายใกล้เคียง' }}</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ================= BACKTEST PAGE ================= -->
+  @if (currentPage === 'backtest') {
+    <div class="dashboard-page">
+      <div class="dashboard-header-page">
+        <div class="button-group">
+          <span class="group-label">Symbol:</span>
+          <select #btSymbol class="custom-select" [value]="backtestSymbol" (change)="backtestSymbol = btSymbol.value" [disabled]="isLoadingBacktest">
+            @for (sym of symbols; track sym) {
+              <option [value]="sym">{{ sym }}</option>
+            }
+          </select>
+          <span class="group-label">TF:</span>
+          <select #btTf class="custom-select" [value]="backtestTimeframe" (change)="backtestTimeframe = btTf.value" [disabled]="isLoadingBacktest">
+            @for (tf of ['M5', 'M15', 'M30', 'H1', 'H4', 'D1']; track tf) {
+              <option [value]="tf">{{ tf }}</option>
+            }
+          </select>
+          <span class="group-label">R:R:</span>
+          <select #btRr class="custom-select" [value]="backtestRiskReward" (change)="backtestRiskReward = +btRr.value" [disabled]="isLoadingBacktest">
+            <option value="1.5">1 : 1.5</option>
+            <option value="2.0">1 : 2.0</option>
+            <option value="2.5">1 : 2.5</option>
+            <option value="3.0">1 : 3.0</option>
+            <option value="4.0">1 : 4.0</option>
+          </select>
+          <span class="group-label">Strategy:</span>
+          <select #btStrat class="custom-select" [value]="backtestStrategyMode" (change)="backtestStrategyMode = btStrat.value" [disabled]="isLoadingBacktest">
+            <option value="hybrid_partial_tp">🚀 Hybrid Partial TP (Win Rate ~60%)</option>
+            <option value="choch_ob_fvg">CHoCH + OB/FVG Retest</option>
+            <option value="all_ob">All Order Blocks Retest</option>
+          </select>
+          <span class="group-label">Trades:</span>
+          <select #btTrades class="custom-select" [value]="backtestMaxTrades" (change)="backtestMaxTrades = +btTrades.value" [disabled]="isLoadingBacktest">
+            <option value="50">50 ไม้</option>
+            <option value="100">100 ไม้</option>
+            <option value="200">200 ไม้</option>
+            <option value="300">300 ไม้</option>
+            <option value="500">500 ไม้</option>
+          </select>
+          <button class="btn" [style.background]="backtestUseBreakEven ? 'rgba(16, 185, 129, 0.3)' : 'rgba(107, 114, 128, 0.3)'" [style.border]="backtestUseBreakEven ? '1px solid #10b981' : '1px solid #6b7280'" (click)="backtestUseBreakEven = !backtestUseBreakEven" [disabled]="isLoadingBacktest">
+            🛡️ กันหน้าทุน 1:1: {{ backtestUseBreakEven ? 'เปิด ON' : 'ปิด OFF' }}
+          </button>
+          <button class="btn" (click)="runBacktest()" [disabled]="isLoadingBacktest">
+            {{ isLoadingBacktest ? '⏳ Simulating...' : '🚀 Run Backtest' }}
+          </button>
+        </div>
+      </div>
+
+      @if (isLoadingBacktest) {
+        <div class="dashboard-body-page center">
+          <div class="loader-spinner"></div>
+          <h2>⏳ กำลังประมวลผลการจำลองกลยุทธ์ SMC Backtest...</h2>
+        </div>
+      } @else if (backtestData) {
+        <div class="dashboard-body-page">
+          <!-- Summary Metrics Cards -->
+          <div class="advanced-smc-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 20px;">
+            <div class="smc-card">
+              <div class="card-header">🎯 Win Rate</div>
+              <div style="font-size: 28px; font-weight: bold; color: #26a69a; margin-top: 8px;">
+                {{ backtestData.win_rate }}%
+              </div>
+              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+                ชนะ {{ backtestData.win_trades }} / แพ้ {{ backtestData.loss_trades }} (รวม {{ backtestData.total_trades }} ไม้)
+              </div>
+            </div>
+
+            @if (backtestData.use_break_even) {
+              <div class="smc-card">
+                <div class="card-header">🛡️ Break-Even (กันทุน)</div>
+                <div style="font-size: 28px; font-weight: bold; color: #f59e0b; margin-top: 8px;">
+                  {{ backtestData.be_trades || 0 }} ไม้
+                </div>
+                <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+                  อัตรากันทุน {{ backtestData.be_rate || 0 }}% (เสมอตัว 0 Loss)
+                </div>
+              </div>
+            }
+
+            <div class="smc-card">
+              <div class="card-header">💰 Net Profit</div>
+              <div style="font-size: 28px; font-weight: bold; margin-top: 8px;" [style.color]="backtestData.net_profit >= 0 ? '#26a69a' : '#ef5350'">
+                {{ backtestData.net_profit >= 0 ? '+' : '' }}{{ backtestData.net_profit }} $
+              </div>
+              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+                ROI: {{ backtestData.net_profit_pct >= 0 ? '+' : '' }}{{ backtestData.net_profit_pct }}%
+              </div>
+            </div>
+
+            <div class="smc-card">
+              <div class="card-header">⚖️ Profit Factor</div>
+              <div style="font-size: 28px; font-weight: bold; color: #3b82f6; margin-top: 8px;">
+                {{ backtestData.profit_factor }}
+              </div>
+              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+                Risk-to-Reward 1 : {{ backtestData.risk_reward_ratio }}
+              </div>
+            </div>
+
+            <div class="smc-card">
+              <div class="card-header">📉 Max Drawdown</div>
+              <div style="font-size: 28px; font-weight: bold; color: #ef5350; margin-top: 8px;">
+                {{ backtestData.max_drawdown }}%
+              </div>
+              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+                เงินทุนเริ่มต้น: {{ backtestData.initial_capital }} $
+              </div>
+            </div>
+
+            @if (backtestData.zone_breakdown) {
+              <div class="smc-card">
+                <div class="card-header">📦 Zone Breakdown</div>
+                <div style="font-size: 14px; color: #e2e8f0; margin-top: 8px; line-height: 1.6;">
+                  <div>🏛️ <b>OB:</b> {{ backtestData.zone_breakdown.ob_total }} ไม้ (Win {{ backtestData.zone_breakdown.ob_win_rate }}%)</div>
+                  <div>⚡ <b>FVG:</b> {{ backtestData.zone_breakdown.fvg_total }} ไม้ (Win {{ backtestData.zone_breakdown.fvg_win_rate }}%)</div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Trade Log Table -->
+          <div class="matrix-section">
+            <div class="section-title">
+              <h2>📋 ประวัติการเข้าเทรดกลยุทธ์ SMC ({{ backtestData.trades.length }} ไม้)</h2>
+            </div>
+            <div class="matrix-table-container">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Setup</th>
+                    <th>Zone</th>
+                    <th>Type</th>
+                    <th>Entry Time</th>
+                    <th>Exit Time</th>
+                    <th>Entry Price</th>
+                    <th>Stop Loss</th>
+                    <th>Take Profit</th>
+                    <th>P&L (USD)</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (trade of backtestData.trades; track trade.id) {
+                    <tr>
+                      <td>{{ trade.id }}</td>
+                      <td>
+                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">{{ trade.setup || 'SMC' }}</span>
+                      </td>
+                      <td>
+                        <span class="badge" [style.background]="trade.entry_zone === 'OB' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(234, 179, 8, 0.2)'" [style.color]="trade.entry_zone === 'OB' ? '#c084fc' : '#facc15'">
+                          {{ trade.entry_zone || 'OB' }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge" [class.badge-buy]="trade.type === 'BUY'" [class.badge-sell]="trade.type === 'SELL'">{{ trade.type }}</span>
+                      </td>
+                      <td>{{ trade.entry_time | slice:0:16 }}</td>
+                      <td>{{ trade.exit_time | slice:0:16 }}</td>
+                      <td>{{ trade.entry_price }}</td>
+                      <td>{{ trade.sl_price }}</td>
+                      <td>{{ trade.tp_price }}</td>
+                      <td [class.bullish-text]="trade.pnl_cash > 0" [class.bearish-text]="trade.pnl_cash < 0">
+                        {{ trade.pnl_cash > 0 ? '+' : '' }}{{ trade.pnl_cash }}
+                      </td>
+                      <td>
+                        <span class="badge" 
+                          [class.badge-buy]="trade.result === 'WIN' || trade.result === 'FULL_WIN'" 
+                          [class.badge-sell]="trade.result === 'LOSS'"
+                          [style.background]="trade.result === 'PARTIAL_WIN' ? 'rgba(6, 182, 212, 0.2)' : (trade.result === 'BE' ? 'rgba(245, 158, 11, 0.2)' : '')"
+                          [style.color]="trade.result === 'PARTIAL_WIN' ? '#22d3ee' : (trade.result === 'BE' ? '#fbbf24' : '')">
+                          {{ trade.result === 'FULL_WIN' ? 'FULL WIN' : (trade.result === 'PARTIAL_WIN' ? 'PART WIN' : trade.result) }}
+                        </span>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="11" style="text-align: center; color: #9ca3af; padding: 20px;">
+                        ไม่พบสัญญาณเข้าเทรดในช่วงเวลานี้ ลองปรับกรอบเวลาหรือขยายจำนวนบาร์
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+</main>
