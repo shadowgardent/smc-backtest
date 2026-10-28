@@ -91,5 +91,7 @@ Desktop.ini
 
 # Documents & Papers
 docs/
+presentation/
+tools_archive/
 *.docx
 *.doc
