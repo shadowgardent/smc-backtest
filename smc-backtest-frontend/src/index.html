@@ -6,6 +6,12 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    // ตั้งธีมก่อนหน้าเว็บแสดงผล เพื่อป้องกันหน้าจอกระพริบ (Dark/Light)
+    try {
+      document.documentElement.setAttribute('data-theme', localStorage.getItem('smc-theme') === 'light' ? 'light' : 'dark');
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <app-root></app-root>

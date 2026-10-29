@@ -47,12 +47,71 @@ export class App implements AfterViewInit, OnDestroy {
   private isBrowser: boolean;
   private liveInterval: ReturnType<typeof setInterval> | null = null;
 
+  // ---- Theme (Dark 🌙 / Light ☀️) ----
+  private static readonly THEME_STORAGE_KEY = 'smc-theme';
+  isDarkMode: boolean = true;
+
+  // ---- Risk Disclaimer (แสดงทุกครั้งที่เปิดโปรแกรม) ----
+  showRiskDisclaimer: boolean = true;
+  riskAcknowledged: boolean = false;
+
   constructor(
     private marketData: MarketData, 
     @Inject(PLATFORM_ID) private platformId: Object,
     private eRef: ElementRef
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      // โหลดธีมที่ผู้ใช้เลือกไว้ล่าสุด (ค่าเริ่มต้น = โหมดมืด)
+      try {
+        this.isDarkMode = localStorage.getItem(App.THEME_STORAGE_KEY) !== 'light';
+      } catch { /* localStorage ใช้งานไม่ได้ ให้ใช้ค่าเริ่มต้น */ }
+      this.applyThemeToDocument();
+    }
+  }
+
+  // ---- Theme ----
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    if (!this.isBrowser) return;
+    try {
+      localStorage.setItem(App.THEME_STORAGE_KEY, this.isDarkMode ? 'dark' : 'light');
+    } catch { /* ignore */ }
+    this.applyThemeToDocument();
+    if (this.chart) {
+      this.chart.applyOptions(this.getChartThemeOptions());
+      requestAnimationFrame(() => this.drawSmcOverlay());
+    }
+  }
+
+  private applyThemeToDocument(): void {
+    document.documentElement.setAttribute('data-theme', this.isDarkMode ? 'dark' : 'light');
+  }
+
+  private getChartThemeOptions() {
+    const dark = this.isDarkMode;
+    const gridColor = dark ? '#1e2130' : '#eef1f6';
+    const borderColor = dark ? '#2a2e39' : '#d1d5db';
+    const crosshairColor = dark ? '#4a5568' : '#94a3b8';
+    return {
+      layout: {
+        background: { color: dark ? '#131722' : '#ffffff' },
+        textColor: dark ? '#9ca3af' : '#334155',
+      },
+      grid: { vertLines: { color: gridColor }, horzLines: { color: gridColor } },
+      timeScale: { borderColor },
+      rightPriceScale: { borderColor },
+      crosshair: {
+        vertLine: { color: crosshairColor },
+        horzLine: { color: crosshairColor },
+      },
+    };
+  }
+
+  // ---- Risk Disclaimer ----
+  acceptRiskDisclaimer(): void {
+    if (!this.riskAcknowledged) return;
+    this.showRiskDisclaimer = false;
   }
 
   @HostListener('document:click', ['$event'])
@@ -107,16 +166,17 @@ export class App implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     if (!this.isBrowser) return;
     const container = document.getElementById('chartContainer') as HTMLElement;
+    const theme = this.getChartThemeOptions();
     this.chart = createChart(container, {
       width: container.clientWidth, height: container.clientHeight,
-      layout: { background: { color: '#131722' }, textColor: '#9ca3af' },
-      grid: { vertLines: { color: '#1e2130' }, horzLines: { color: '#1e2130' } },
-      timeScale: { timeVisible: true, borderColor: '#2a2e39' },
-      rightPriceScale: { borderColor: '#2a2e39' },
+      layout: theme.layout,
+      grid: theme.grid,
+      timeScale: { timeVisible: true, borderColor: theme.timeScale.borderColor },
+      rightPriceScale: theme.rightPriceScale,
       crosshair: { 
         mode: CrosshairMode.Normal, // เปลี่ยนเป็น Normal เพื่อให้ลากอิสระ ไม่ดูด
-        vertLine: { color: '#4a5568', width: 1, style: 2 }, 
-        horzLine: { color: '#4a5568', width: 1, style: 2 } 
+        vertLine: { color: theme.crosshair.vertLine.color, width: 1, style: 2 }, 
+        horzLine: { color: theme.crosshair.horzLine.color, width: 1, style: 2 } 
       },
     });
     this.candlestickSeries = this.chart.addSeries(CandlestickSeries, {

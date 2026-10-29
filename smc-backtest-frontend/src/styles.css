@@ -2,8 +2,100 @@
   box-sizing: border-box;
 }
 
+/* ================= Theme Tokens ================= */
+/* Dark (default / Moon mode) */
+:root {
+  color-scheme: dark;
+
+  --bg-app: #0d1117;
+  --bg-surface: #161b22;
+  --bg-surface-hover: #1e2533;
+  --bg-inset: #0d1117;
+  --bg-control: #1a1a2e;
+
+  --border: #2d2d3e;
+  --border-strong: #374151;
+  --border-hover: #4a5568;
+  --border-chart: #21262d;
+
+  --text-primary: #f1f5f9;
+  --text-body: #e2e8f0;
+  --text-secondary: #d1d5db;
+  --text-desc: #cbd5e1;
+  --text-muted: #9ca3af;
+  --text-faint: #6b7280;
+
+  --overlay-hover: rgba(255, 255, 255, 0.05);
+  --overlay-subtle: rgba(255, 255, 255, 0.02);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --backdrop: rgba(1, 4, 9, 0.78);
+
+  --accent: #3b82f6;
+  --accent-strong: #2563eb;
+  --accent-soft-bg: #1a1a2e;
+  --accent-soft-hover: #1e3a8a;
+  --accent-soft-text: #60a5fa;
+  --accent-soft-text-hover: #93c5fd;
+
+  --badge-setup: #60a5fa;
+  --badge-ob: #c084fc;
+  --badge-fvg: #facc15;
+  --badge-partial: #22d3ee;
+  --badge-be: #fbbf24;
+
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --warning-border: rgba(245, 158, 11, 0.45);
+}
+
+/* Light (Sun mode) */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-app: #f3f5f9;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #eef2f7;
+  --bg-inset: #f8fafc;
+  --bg-control: #ffffff;
+
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-hover: #94a3b8;
+  --border-chart: #d9dee7;
+
+  --text-primary: #0f172a;
+  --text-body: #1e293b;
+  --text-secondary: #334155;
+  --text-desc: #475569;
+  --text-muted: #64748b;
+  --text-faint: #64748b;
+
+  --overlay-hover: rgba(15, 23, 42, 0.05);
+  --overlay-subtle: rgba(15, 23, 42, 0.03);
+  --shadow-color: rgba(15, 23, 42, 0.15);
+  --backdrop: rgba(15, 23, 42, 0.55);
+
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-soft-bg: #eff6ff;
+  --accent-soft-hover: #dbeafe;
+  --accent-soft-text: #2563eb;
+  --accent-soft-text-hover: #1d4ed8;
+
+  --badge-setup: #1d4ed8;
+  --badge-ob: #7e22ce;
+  --badge-fvg: #a16207;
+  --badge-partial: #0e7490;
+  --badge-be: #b45309;
+
+  --warning: #d97706;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --warning-border: rgba(217, 119, 6, 0.45);
+}
+
 body {
   margin: 0;
   padding: 0;
-  background: #0d1117;
+  background: var(--bg-app);
+  transition: background-color 0.25s ease;
 }

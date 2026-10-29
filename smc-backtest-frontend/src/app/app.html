@@ -3,10 +3,26 @@
   <!-- Navigation Top Bar -->
   <div class="top-nav">
     <h1 class="title">📈 SMC Backtest Engine</h1>
-    <div class="nav-links">
-      <button class="nav-btn" [class.active]="currentPage === 'chart'" (click)="currentPage = 'chart'">📈 Chart</button>
-      <button class="nav-btn" [class.active]="currentPage === 'dashboard'" (click)="openDashboard()">📊 Dashboard</button>
-      <button class="nav-btn" [class.active]="currentPage === 'backtest'" (click)="openBacktest()">🧪 Backtest</button>
+    <div class="nav-right">
+      <div class="nav-links">
+        <button class="nav-btn" [class.active]="currentPage === 'chart'" (click)="currentPage = 'chart'">📈 Chart</button>
+        <button class="nav-btn" [class.active]="currentPage === 'dashboard'" (click)="openDashboard()">📊 Dashboard</button>
+        <button class="nav-btn" [class.active]="currentPage === 'backtest'" (click)="openBacktest()">🧪 Backtest</button>
+      </div>
+
+      <!-- Theme Toggle: 🌙 Dark / ☀️ Light -->
+      <button
+        type="button"
+        class="theme-toggle"
+        [class.light]="!isDarkMode"
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDarkMode ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด'"
+        [attr.aria-pressed]="!isDarkMode"
+        [title]="isDarkMode ? 'โหมดมืด (คลิกเพื่อสลับเป็นโหมดสว่าง)' : 'โหมดสว่าง (คลิกเพื่อสลับเป็นโหมดมืด)'">
+        <span class="toggle-knob"></span>
+        <span class="toggle-icon">🌙</span>
+        <span class="toggle-icon">☀️</span>
+      </button>
     </div>
   </div>
 
@@ -329,10 +345,10 @@
           <div class="advanced-smc-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 20px;">
             <div class="smc-card">
               <div class="card-header">🎯 Win Rate</div>
-              <div style="font-size: 28px; font-weight: bold; color: #26a69a; margin-top: 8px;">
+              <div class="metric-value" style="color: #26a69a;">
                 {{ backtestData.win_rate }}%
               </div>
-              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+              <div class="metric-sub">
                 ชนะ {{ backtestData.win_trades }} / แพ้ {{ backtestData.loss_trades }} (รวม {{ backtestData.total_trades }} ไม้)
               </div>
             </div>
@@ -340,10 +356,10 @@
             @if (backtestData.use_break_even) {
               <div class="smc-card">
                 <div class="card-header">🛡️ Break-Even (กันทุน)</div>
-                <div style="font-size: 28px; font-weight: bold; color: #f59e0b; margin-top: 8px;">
+                <div class="metric-value" style="color: #f59e0b;">
                   {{ backtestData.be_trades || 0 }} ไม้
                 </div>
-                <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+                <div class="metric-sub">
                   อัตรากันทุน {{ backtestData.be_rate || 0 }}% (เสมอตัว 0 Loss)
                 </div>
               </div>
@@ -351,30 +367,30 @@
 
             <div class="smc-card">
               <div class="card-header">💰 Net Profit</div>
-              <div style="font-size: 28px; font-weight: bold; margin-top: 8px;" [style.color]="backtestData.net_profit >= 0 ? '#26a69a' : '#ef5350'">
+              <div class="metric-value" [style.color]="backtestData.net_profit >= 0 ? '#26a69a' : '#ef5350'">
                 {{ backtestData.net_profit >= 0 ? '+' : '' }}{{ backtestData.net_profit }} $
               </div>
-              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+              <div class="metric-sub">
                 ROI: {{ backtestData.net_profit_pct >= 0 ? '+' : '' }}{{ backtestData.net_profit_pct }}%
               </div>
             </div>
 
             <div class="smc-card">
               <div class="card-header">⚖️ Profit Factor</div>
-              <div style="font-size: 28px; font-weight: bold; color: #3b82f6; margin-top: 8px;">
+              <div class="metric-value" style="color: #3b82f6;">
                 {{ backtestData.profit_factor }}
               </div>
-              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+              <div class="metric-sub">
                 Risk-to-Reward 1 : {{ backtestData.risk_reward_ratio }}
               </div>
             </div>
 
             <div class="smc-card">
               <div class="card-header">📉 Max Drawdown</div>
-              <div style="font-size: 28px; font-weight: bold; color: #ef5350; margin-top: 8px;">
+              <div class="metric-value" style="color: #ef5350;">
                 {{ backtestData.max_drawdown }}%
               </div>
-              <div style="font-size: 13px; color: #9ca3af; margin-top: 4px;">
+              <div class="metric-sub">
                 เงินทุนเริ่มต้น: {{ backtestData.initial_capital }} $
               </div>
             </div>
@@ -382,7 +398,7 @@
             @if (backtestData.zone_breakdown) {
               <div class="smc-card">
                 <div class="card-header">📦 Zone Breakdown</div>
-                <div style="font-size: 14px; color: #e2e8f0; margin-top: 8px; line-height: 1.6;">
+                <div class="metric-detail">
                   <div>🏛️ <b>OB:</b> {{ backtestData.zone_breakdown.ob_total }} ไม้ (Win {{ backtestData.zone_breakdown.ob_win_rate }}%)</div>
                   <div>⚡ <b>FVG:</b> {{ backtestData.zone_breakdown.fvg_total }} ไม้ (Win {{ backtestData.zone_breakdown.fvg_win_rate }}%)</div>
                 </div>
@@ -417,10 +433,10 @@
                     <tr>
                       <td>{{ trade.id }}</td>
                       <td>
-                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">{{ trade.setup || 'SMC' }}</span>
+                        <span class="badge badge-setup">{{ trade.setup || 'SMC' }}</span>
                       </td>
                       <td>
-                        <span class="badge" [style.background]="trade.entry_zone === 'OB' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(234, 179, 8, 0.2)'" [style.color]="trade.entry_zone === 'OB' ? '#c084fc' : '#facc15'">
+                        <span class="badge" [class.badge-zone-ob]="(trade.entry_zone || 'OB') === 'OB'" [class.badge-zone-fvg]="(trade.entry_zone || 'OB') !== 'OB'">
                           {{ trade.entry_zone || 'OB' }}
                         </span>
                       </td>
@@ -439,15 +455,15 @@
                         <span class="badge" 
                           [class.badge-buy]="trade.result === 'WIN' || trade.result === 'FULL_WIN'" 
                           [class.badge-sell]="trade.result === 'LOSS'"
-                          [style.background]="trade.result === 'PARTIAL_WIN' ? 'rgba(6, 182, 212, 0.2)' : (trade.result === 'BE' ? 'rgba(245, 158, 11, 0.2)' : '')"
-                          [style.color]="trade.result === 'PARTIAL_WIN' ? '#22d3ee' : (trade.result === 'BE' ? '#fbbf24' : '')">
+                          [class.badge-partial]="trade.result === 'PARTIAL_WIN'"
+                          [class.badge-be]="trade.result === 'BE'">
                           {{ trade.result === 'FULL_WIN' ? 'FULL WIN' : (trade.result === 'PARTIAL_WIN' ? 'PART WIN' : trade.result) }}
                         </span>
                       </td>
                     </tr>
                   } @empty {
                     <tr>
-                      <td colspan="11" style="text-align: center; color: #9ca3af; padding: 20px;">
+                      <td colspan="11" class="empty-row">
                         ไม่พบสัญญาณเข้าเทรดในช่วงเวลานี้ ลองปรับกรอบเวลาหรือขยายจำนวนบาร์
                       </td>
                     </tr>
@@ -459,6 +475,42 @@
 
         </div>
       }
+    </div>
+  }
+
+  <!-- ================= RISK DISCLAIMER (แสดงทุกครั้งที่เปิดโปรแกรม) ================= -->
+  @if (showRiskDisclaimer) {
+    <div class="risk-backdrop">
+      <div class="risk-modal" role="alertdialog" aria-modal="true" aria-labelledby="riskTitle" aria-describedby="riskMessage">
+        <div class="risk-header">
+          <div class="risk-icon">⚠️</div>
+          <div>
+            <h2 id="riskTitle" class="risk-title">คำเตือนความเสี่ยงในการลงทุน</h2>
+            <p class="risk-subtitle">Risk Disclaimer</p>
+          </div>
+        </div>
+
+        <p id="riskMessage" class="risk-highlight">
+          การลงทุนมีความเสี่ยง<br>
+          กรุณาควบคุมความเสี่ยงและบริหารการเงินให้ดี
+        </p>
+
+        <ul class="risk-list">
+          <li>ผลการทดสอบย้อนหลัง (Backtest) <b>ไม่ได้รับประกัน</b>ผลตอบแทนในอนาคต</li>
+          <li>สัญญาณและการวิเคราะห์ SMC ในโปรแกรมนี้มีไว้เพื่อการศึกษา <b>ไม่ใช่คำแนะนำการลงทุน</b></li>
+          <li>ควรตั้ง <b>Stop Loss</b> ทุกครั้ง และไม่ควรเสี่ยงเกิน <b>1–2%</b> ของพอร์ตต่อไม้</li>
+          <li>ลงทุนเฉพาะเงินที่คุณ<b>ยอมรับการสูญเสียได้</b>เท่านั้น</li>
+        </ul>
+
+        <label class="risk-ack">
+          <input type="checkbox" [checked]="riskAcknowledged" (change)="riskAcknowledged = !riskAcknowledged">
+          <span>ข้าพเจ้าได้อ่านและเข้าใจความเสี่ยงในการลงทุนแล้ว</span>
+        </label>
+
+        <button type="button" class="risk-accept-btn" [disabled]="!riskAcknowledged" (click)="acceptRiskDisclaimer()">
+          ✅ รับทราบและเข้าสู่โปรแกรม
+        </button>
+      </div>
     </div>
   }
 
